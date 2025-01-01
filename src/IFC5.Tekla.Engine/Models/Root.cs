@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace IFC5Tekla.Engine.ModelsNew;
+namespace IFC5Tekla.Engine.Models;
 
 public partial class Root : List<Prim>
 {
@@ -180,7 +180,7 @@ internal class PrimConverter : JsonConverter<Prim>
     public override Prim? ReadJson(JsonReader reader, Type objectType, Prim? existingValue, bool hasExistingValue, JsonSerializer serializer)
     {
         var jObj = JObject.Load(reader);
-        
+
         return ReadPrim(jObj);
     }
 
