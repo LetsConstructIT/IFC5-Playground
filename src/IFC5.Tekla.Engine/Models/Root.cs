@@ -131,7 +131,8 @@ public partial class OutputsSurfaceConnect
 
 public partial class CustomDataComponent : Component
 {
-    public Dictionary<string, object>? Data { get; set; }
+    [JsonProperty("originalStepInstance")]
+    public string? OriginalStepInstance { get; set; }
 }
 
 public partial class Def : Prim, IParent, IComponentable
@@ -279,6 +280,7 @@ internal class PrimConverter : JsonConverter<Prim>
             "UsdGeom:VisibilityAPI:visibility" => typeof(UsdGeomVisibilityApiVisibilityComponent),
             "xformOp" => typeof(XformOpComponent),
             "nlsfb:class" => typeof(NlsfbClassComponent),
+            "customdata" => typeof(CustomDataComponent),
             _ => null
         };
     }
