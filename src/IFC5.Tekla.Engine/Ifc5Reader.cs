@@ -11,6 +11,16 @@ public class Ifc5Reader
 {
     public void Read(string path)
     {
+        var ifcX = JsonConvert.DeserializeObject<ModelsNew.Root>(File.ReadAllText(path), ModelsNew.Converter.Settings);
+
+        var test = ifcX.Where(i => i != null && i.Name == "N25503984660543a18597eae657ff5bea_Body").ToList();
+        Console.WriteLine(ifcX.Count());
+        Console.ReadLine();
+    }
+
+
+    public void ReadOld(string path)
+    {
         var ifcX = JsonConvert.DeserializeObject<List<IfcX>>(File.ReadAllText(path), Converter.Settings);
 
         var disclaimer = ifcX.FirstOrDefault(i => i.Disclaimer is not null);
