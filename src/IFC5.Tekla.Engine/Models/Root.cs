@@ -29,21 +29,29 @@ public partial class Prim : Component
 
     [JsonProperty("inherits")]
     public string[]? Inherits { get; set; }
+}
+
+public interface IParent
+{
+    public Def[]? Children { get; set; }
+}
+
+public partial class Def : Prim, IParent
+{
+    [JsonProperty("type")]
+    public string? Type { get; set; }
 
     [JsonProperty("children")]
-    public Prim[]? Children { get; set; }
+    public Def[]? Children { get; set; }
 }
 
-public partial class Def : Prim
+public partial class Class : Prim, IParent
 {
     [JsonProperty("type")]
     public string? Type { get; set; }
-}
 
-public partial class Class : Prim
-{
-    [JsonProperty("type")]
-    public string? Type { get; set; }
+    [JsonProperty("children")]
+    public Def[]? Children { get; set; }
 }
 
 public partial class Over : Prim
@@ -84,12 +92,16 @@ internal class PrimConverter : JsonConverter<Prim>
         if (readObject is not Prim prim)
             return null;
 
-        var children = ReadChildren(jObj);
-        prim.Children = children;
+        if (readObject is IParent parent)
+        {
+            var children = ReadChildren(jObj);
+            parent.Children = children;
+        }
+
         return prim;
     }
 
-    private Prim[]? ReadChildren(JObject jObj)
+    private Def[]? ReadChildren(JObject jObj)
     {
         if (!jObj.ContainsKey("children"))
             return null;
@@ -98,15 +110,15 @@ internal class PrimConverter : JsonConverter<Prim>
         if (jChildren is not JArray array)
             return null;
 
-        var children = new List<Prim>();
+        var children = new List<Def>();
         foreach (var child in array)
         {
             if (child is not JObject jObject)
                 continue;
 
             var prim = ReadPrim(jObject);
-            if (prim is not null)
-                children.Add(prim);
+            if (prim is Def def)
+                children.Add(def);
         }
 
         return children.ToArray();
