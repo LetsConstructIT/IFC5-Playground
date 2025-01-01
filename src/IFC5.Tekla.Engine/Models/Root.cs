@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace IFC5Tekla.Engine.ModelsNew;
 
@@ -39,6 +40,98 @@ public interface IComponentable
 public partial class Component
 {
 
+}
+
+public partial class Ifc5ClassComponent : Component
+{
+    [JsonProperty("code")]
+    public string? Code { get; set; }
+
+    [JsonProperty("uri")]
+    public string? Uri { get; set; }
+}
+
+public partial class NlsfbClassComponent : Component
+{
+    [JsonProperty("code")]
+    public string? Code { get; set; }
+
+    [JsonProperty("uri")]
+    public Uri? Uri { get; set; }
+}
+
+public partial class Ifc5PropertiesComponent : Component
+{
+    [JsonProperty("IsExternal")]
+    public long IsExternal { get; set; }
+}
+
+public partial class UsdShadeMaterialBindingApiComponent : Component
+{
+    [JsonProperty("material:binding")]
+    public OutputsSurfaceConnectComponent? MaterialBinding { get; set; }
+}
+
+public partial class OutputsSurfaceConnectComponent : Component
+{
+    [JsonProperty("ref")]
+    public string? Ref { get; set; }
+}
+
+public partial class UsdGeomMeshComponent : Component
+{
+    [JsonProperty("faceVertexIndices")]
+    public long[]? FaceVertexIndices { get; set; }
+
+    [JsonProperty("points")]
+    public double[][]? Points { get; set; }
+}
+
+public partial class UsdGeomBasisCurvesComponent : Component
+{
+    [JsonProperty("points")]
+    public long[][]? Points { get; set; }
+}
+
+public partial class XformOpComponent : Component
+{
+    [JsonProperty("transform")]
+    public double[][]? Transform { get; set; }
+}
+
+public partial class UsdGeomVisibilityApiVisibilityComponent : Component
+{
+    [JsonProperty("visibility")]
+    public string? Visibility { get; set; }
+}
+
+public partial class UsdShadeShaderComponent : Component
+{
+    [JsonProperty("info:id")]
+    public string? Id { get; set; }
+    [JsonProperty("inputs:diffuseColor")]
+    public double[]? DiffuseColor { get; set; }
+    [JsonProperty("inputs:opacity")]
+    public double? Opacity { get; set; }
+    [JsonProperty("outputs:surface")]
+    public string? Surface { get; set; }
+}
+
+public partial class Ifc5SpaceboundaryComponent : Component
+{
+    [JsonProperty("relatedElement")]
+    public OutputsSurfaceConnect? RelatedElement { get; set; }
+}
+
+public partial class OutputsSurfaceConnect
+{
+    [JsonProperty("ref")]
+    public string? Ref { get; set; }
+}
+
+public partial class CustomDataComponent : Component
+{
+    public Dictionary<string, object>? Data { get; set; }
 }
 
 public partial class Def : Prim, IParent, IComponentable
@@ -87,7 +180,7 @@ internal class PrimConverter : JsonConverter<Prim>
     public override Prim? ReadJson(JsonReader reader, Type objectType, Prim? existingValue, bool hasExistingValue, JsonSerializer serializer)
     {
         var jObj = JObject.Load(reader);
-
+        
         return ReadPrim(jObj);
     }
 
@@ -143,6 +236,22 @@ internal class PrimConverter : JsonConverter<Prim>
             return null;
 
         var jChildren = jObj["attributes"];
+        if (jChildren.Count() == 1 && jChildren.First() is JProperty property)
+        {
+            var componentType = GetComponentType(property.Name);
+            if (componentType is null)
+                return null;
+
+            var readObject = property.Value.ToObject(componentType);
+            if (readObject is Component component)
+                return component;
+        }
+        else // strange UsdShade:Shader, not wrapped in single property
+        {
+            var readObject = jChildren!.ToObject(typeof(UsdShadeShaderComponent));
+            if (readObject is Component component)
+                return component;
+        }
         return new Component();
     }
 
@@ -154,6 +263,23 @@ internal class PrimConverter : JsonConverter<Prim>
             "class" => typeof(Class),
             "over" => typeof(Over),
             _ => throw new InvalidCastException()
+        };
+    }
+
+    private Type? GetComponentType(string componentName)
+    {
+        return componentName switch
+        {
+            "ifc5:class" => typeof(Ifc5ClassComponent),
+            "ifc5:properties" => typeof(Ifc5PropertiesComponent),
+            "ifc5:spaceboundary" => typeof(Ifc5SpaceboundaryComponent),
+            "UsdShade:MaterialBindingAPI" => typeof(UsdShadeMaterialBindingApiComponent),
+            "UsdGeom:Mesh" => typeof(UsdGeomMeshComponent),
+            "UsdGeom:BasisCurves" => typeof(UsdGeomBasisCurvesComponent),
+            "UsdGeom:VisibilityAPI:visibility" => typeof(UsdGeomVisibilityApiVisibilityComponent),
+            "xformOp" => typeof(XformOpComponent),
+            "nlsfb:class" => typeof(NlsfbClassComponent),
+            _ => null
         };
     }
 
