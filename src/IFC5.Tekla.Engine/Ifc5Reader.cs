@@ -11,10 +11,10 @@ public class Ifc5Reader
 {
     public void Read(string path)
     {
-        var ifcX = JsonConvert.DeserializeObject<Root>(File.ReadAllText(path), Converter.Settings);
+        var ifcContent = JsonConvert.DeserializeObject<Root>(File.ReadAllText(path), Converter.Settings)!;
 
-        var test = ifcX.Where(i => i != null && i.Name == "SpaceMaterial").ToList();
-        Console.WriteLine(ifcX.Count());
+        new Ifc5Composer().Compose(ifcContent);
+        Console.WriteLine(ifcContent.Count());
         Console.ReadLine();
     }
 }
