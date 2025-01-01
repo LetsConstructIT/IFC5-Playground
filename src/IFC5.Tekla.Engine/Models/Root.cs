@@ -11,18 +11,13 @@ public partial class Root : List<Prim>
 {
 }
 
-public partial class Component
-{
-
-}
-
-public partial class Disclaimer : Component
+public partial class Disclaimer
 {
     [JsonProperty("disclaimer")]
     public string? Note { get; set; }
 }
 
-public partial class Prim : Component
+public partial class Prim
 {
     [JsonProperty("name")]
     public string? Name { get; set; }
@@ -36,13 +31,26 @@ public interface IParent
     public Def[]? Children { get; set; }
 }
 
-public partial class Def : Prim, IParent
+public interface IComponentable
+{
+    public Component? Component { get; set; }
+}
+
+public partial class Component
+{
+
+}
+
+public partial class Def : Prim, IParent, IComponentable
 {
     [JsonProperty("type")]
     public string? Type { get; set; }
 
     [JsonProperty("children")]
     public Def[]? Children { get; set; }
+
+    [JsonProperty("attributes")]
+    public Component? Component { get; set; }
 }
 
 public partial class Class : Prim, IParent
@@ -54,9 +62,10 @@ public partial class Class : Prim, IParent
     public Def[]? Children { get; set; }
 }
 
-public partial class Over : Prim
+public partial class Over : Prim, IComponentable
 {
-
+    [JsonProperty("attributes")]
+    public Component? Component { get; set; }
 }
 
 internal static class Converter
@@ -94,8 +103,12 @@ internal class PrimConverter : JsonConverter<Prim>
 
         if (readObject is IParent parent)
         {
-            var children = ReadChildren(jObj);
-            parent.Children = children;
+            parent.Children = ReadChildren(jObj);
+        }
+
+        if (readObject is IComponentable componentable)
+        {
+            componentable.Component = ReadComponent(jObj);
         }
 
         return prim;
@@ -122,6 +135,15 @@ internal class PrimConverter : JsonConverter<Prim>
         }
 
         return children.ToArray();
+    }
+
+    private Component? ReadComponent(JObject jObj)
+    {
+        if (!jObj.ContainsKey("attributes"))
+            return null;
+
+        var jChildren = jObj["attributes"];
+        return new Component();
     }
 
     private Type GetDefType(string typeName)

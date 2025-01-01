@@ -13,7 +13,7 @@ public class Ifc5Reader
     {
         var ifcX = JsonConvert.DeserializeObject<ModelsNew.Root>(File.ReadAllText(path), ModelsNew.Converter.Settings);
 
-        var test = ifcX.Where(i => i != null && i.Name == "N25503984660543a18597eae657ff5bea_Body").ToList();
+        var test = ifcX.Where(i => i != null && i.Name == "SpaceMaterial").ToList();
         Console.WriteLine(ifcX.Count());
         Console.ReadLine();
     }
