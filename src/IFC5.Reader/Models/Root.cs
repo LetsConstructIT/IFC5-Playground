@@ -255,7 +255,7 @@ internal class PrimConverter : JsonConverter<PrimJson>
             return null;
 
         var jChildren = jObj["attributes"];
-        if (jChildren.Count() == 1 && jChildren.First() is JProperty property)
+        if (jChildren != null && jChildren.Count() == 1 && jChildren.First() is JProperty property)
         {
             var componentType = GetComponentType(property.Name);
             if (componentType is null)

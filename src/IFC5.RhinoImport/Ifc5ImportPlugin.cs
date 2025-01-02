@@ -21,8 +21,8 @@ public class Ifc5ImportPlugin : Rhino.PlugIns.FileImportPlugIn
 
     protected override bool ReadFile(string filename, int index, RhinoDoc doc, Rhino.FileIO.FileReadOptions options)
     {
-        bool read_success = false;
+        var composedObjects = new Reader.Reader().Read(filename);
 
-        return read_success;
+        return true;
     }
 }

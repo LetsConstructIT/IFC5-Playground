@@ -25,7 +25,7 @@ public class Prim
     }
 
     public override int GetHashCode() => Name.GetHashCode();
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (obj is not Prim prim) return false;
 
