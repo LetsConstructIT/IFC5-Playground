@@ -1,9 +1,5 @@
 ﻿using IFC5Tekla.Engine.Domain;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IFC5Tekla.Engine;
 internal class TreeComposer
@@ -15,21 +11,22 @@ internal class TreeComposer
         _inputTree = inputTree;
     }
 
-    public void Compose()
+    public RootPrims Compose()
     {
-        var roots = _inputTree.FindRoots();
+        var rootPrims = new RootPrims();
 
-        foreach (var rootName in roots)
+        foreach (var rootName in _inputTree.FindRoots())
         {
             var rootPrim = _inputTree.GetPrim(rootName);
             DepthFirstTraversal(_inputTree, rootPrim);
 
+            rootPrims.Add(rootPrim);
         }
+
+        return rootPrims;
     }
 
-    public Prim DepthFirstTraversal(
-                    IPrimGraph graph,
-                    Prim start)
+    public Prim DepthFirstTraversal(IPrimGraph graph, Prim start)
     {
         var visited = new HashSet<Prim>();
         var stack = new Stack<Prim>();
@@ -46,7 +43,7 @@ internal class TreeComposer
             foreach (var child in graph.GetNeighbours(current))
             {
                 if (!visited.Contains(child))
-                stack.Push(child);
+                    stack.Push(child);
 
                 current.Children.Add(child);
             }
@@ -54,4 +51,9 @@ internal class TreeComposer
 
         return start;
     }
+}
+
+public class RootPrims : List<Prim>
+{
+
 }
