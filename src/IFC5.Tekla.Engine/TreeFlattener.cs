@@ -5,19 +5,19 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace IFC5Tekla.Engine;
-internal class FlattenTreeComposer
+internal class TreeFlattener
 {
     private readonly IEnumerable<PrimJson> _jsonPrims;
     private readonly Dictionary<string, ChildNames> _relations = new();
 
     private readonly string _childSeparator = "__";
 
-    public FlattenTreeComposer(IEnumerable<PrimJson> prims)
+    public TreeFlattener(IEnumerable<PrimJson> prims)
     {
         _jsonPrims = prims ?? throw new ArgumentNullException(nameof(prims));
     }
 
-    public FlattenTree Compose()
+    public FlattenedTree Flatten()
     {
         _relations.Clear();
 
@@ -26,7 +26,7 @@ internal class FlattenTreeComposer
 
         AddInheritRelations(prims);
 
-        return new FlattenTree(prims, _relations);
+        return new FlattenedTree(prims, _relations);
     }
 
     private List<Prim> CollectTopLevelPrims()
@@ -91,12 +91,12 @@ internal class FlattenTreeComposer
     }
 }
 
-public class FlattenTree
+public class FlattenedTree
 {
     public IReadOnlyList<Prim> Prims { get; }
     public Dictionary<string, ChildNames> Relations { get; }
 
-    public FlattenTree(IReadOnlyList<Prim> prims, Dictionary<string, ChildNames> _relations)
+    public FlattenedTree(IReadOnlyList<Prim> prims, Dictionary<string, ChildNames> _relations)
     {
         Prims = prims ?? throw new ArgumentNullException(nameof(prims));
         Relations = _relations ?? throw new ArgumentNullException(nameof(_relations));

@@ -14,7 +14,7 @@ internal class Ifc5Composer
 
     public void Compose(IEnumerable<PrimJson> prims)
     {
-        var flattenTree = new FlattenTreeComposer(prims).Compose();
+        var flattenedTree = new TreeFlattener(prims).Flatten();
 
     }
 
