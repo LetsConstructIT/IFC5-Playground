@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IFC5.Reader", "IFC5.Reader\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IFC5.RhinoImport", "IFC5.RhinoImport\IFC5.RhinoImport.csproj", "{5FE37036-AB0D-4449-8ABC-1CDB59D55016}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IFC5.Reader.UnitTests", "IFC5.Reader.UnitTests\IFC5.Reader.UnitTests.csproj", "{AF377F59-8A81-436C-BB05-B6103E2279B6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{5FE37036-AB0D-4449-8ABC-1CDB59D55016}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5FE37036-AB0D-4449-8ABC-1CDB59D55016}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FE37036-AB0D-4449-8ABC-1CDB59D55016}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF377F59-8A81-436C-BB05-B6103E2279B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF377F59-8A81-436C-BB05-B6103E2279B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF377F59-8A81-436C-BB05-B6103E2279B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF377F59-8A81-436C-BB05-B6103E2279B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
