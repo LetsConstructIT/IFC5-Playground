@@ -16,6 +16,14 @@ public class Prim
         Name = name ?? throw new ArgumentNullException(nameof(name));
         Children = new List<Prim>();
     }
+
+    public override int GetHashCode() => Name.GetHashCode();
+    public override bool Equals(object obj)
+    {
+        if (obj is not Prim prim) return false;
+
+        return Name.Equals(prim.Name);
+    }
 }
 
 public class Class : Prim
