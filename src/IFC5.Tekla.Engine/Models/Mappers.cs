@@ -1,8 +1,8 @@
-﻿using IFC5Tekla.Engine.Domain;
-using IFC5Tekla.Engine.Exceptions;
+﻿using IFC5.Reader.Domain;
+using IFC5.Reader.Exceptions;
 using System;
 
-namespace IFC5Tekla.Engine.Models;
+namespace IFC5.Reader.Models;
 public static class Mappers
 {
     public static Def ToDomain(this DefJson json)
@@ -20,7 +20,7 @@ public static class Mappers
 
     public static Def ToDomain(this DefJson json, string overwrittenName)
     {
-        var type = (json.Type is null || string.IsNullOrEmpty(json.Type)) ?
+        var type = json.Type is null || string.IsNullOrEmpty(json.Type) ?
             string.Empty : json.Type;
 
         var component = json.Component is null ? NullComponent.Instance : json.Component;

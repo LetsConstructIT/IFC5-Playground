@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace IFC5Tekla.Engine;
+namespace IFC5.Reader;
 public static class EnumerableExtensions
 {
     public static bool None<TSource>(this IEnumerable<TSource> source,

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace IFC5Tekla.Engine;
+namespace IFC5.Reader;
 internal class Program
 {
     public static void Main(string[] args)

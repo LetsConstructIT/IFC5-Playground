@@ -1,10 +1,10 @@
-﻿using IFC5Tekla.Engine.Models;
+﻿using IFC5.Reader.Models;
 using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Linq;
 
-namespace IFC5Tekla.Engine;
+namespace IFC5.Reader;
 
 public class Ifc5Reader
 {

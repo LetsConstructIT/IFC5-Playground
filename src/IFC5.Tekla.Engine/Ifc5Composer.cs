@@ -1,7 +1,7 @@
-﻿using IFC5Tekla.Engine.Models;
+﻿using IFC5.Reader.Models;
 using System.Collections.Generic;
 
-namespace IFC5Tekla.Engine;
+namespace IFC5.Reader;
 internal class Ifc5Composer
 {
     public void Compose(IEnumerable<PrimJson> prims)

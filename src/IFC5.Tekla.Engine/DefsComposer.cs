@@ -1,10 +1,10 @@
-﻿using IFC5Tekla.Engine.Domain;
-using IFC5Tekla.Engine.Models;
+﻿using IFC5.Reader.Domain;
+using IFC5.Reader.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace IFC5Tekla.Engine;
+namespace IFC5.Reader;
 internal class DefsComposer
 {
     private readonly RootPrims _rootPrims;

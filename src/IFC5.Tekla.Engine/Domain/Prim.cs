@@ -1,10 +1,10 @@
-﻿using IFC5Tekla.Engine.Models;
+﻿using IFC5.Reader.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace IFC5Tekla.Engine.Domain;
+namespace IFC5.Reader.Domain;
 
 [DebuggerDisplay("{Name}")]
 public class Prim

@@ -1,8 +1,8 @@
-﻿using IFC5Tekla.Engine.Domain;
+﻿using IFC5.Reader.Domain;
 using System;
 using System.Collections.Generic;
 
-namespace IFC5Tekla.Engine;
+namespace IFC5.Reader;
 internal class TreeComposer
 {
     private readonly FlattenedTree _inputTree;

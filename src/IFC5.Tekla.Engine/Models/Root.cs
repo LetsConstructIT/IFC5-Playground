@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace IFC5Tekla.Engine.Models;
+namespace IFC5.Reader.Models;
 
 public partial class Root : List<PrimJson>
 {
