@@ -102,7 +102,16 @@ public class FlattenedTree : IPrimGraph
         Prims = prims ?? throw new ArgumentNullException(nameof(prims));
         Relations = _relations ?? throw new ArgumentNullException(nameof(_relations));
 
-        _classesAndDefs = Prims.Where(p => p is Class || p is Def).ToDictionary(p => p.Name);
+        _classesAndDefs = new Dictionary<string, Prim>();
+        foreach (var prim in Prims.Where(p => p is Class || p is Def))
+        {
+            if (_classesAndDefs.ContainsKey(prim.Name))
+            {
+                //TODO: should it be allowed in IFC5?
+            }
+            else
+                _classesAndDefs.Add(prim.Name, prim);
+        }
     }
 
     public IReadOnlyList<string> FindRoots()
