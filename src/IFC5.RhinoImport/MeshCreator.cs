@@ -11,7 +11,7 @@ namespace IFC5.RhinoImport;
 internal class MeshCreator
 {
 
-    public Mesh CreateRhinoMesh(UsdGeomMeshComponent usdGeomMesh)
+    public Mesh CreateRhinoMesh(UsdGeomMeshComponent usdGeomMesh, XformOpComponent xformOpComponent)
     {
         var mesh = new Mesh();
         foreach (var coords in usdGeomMesh.Points)
@@ -27,6 +27,11 @@ internal class MeshCreator
         }
 
         mesh.Normals.ComputeNormals();
+
+        if (xformOpComponent is not null)
+        {
+            var transformation = xformOpComponent.Transform;
+        }
 
         return mesh;
     }
