@@ -51,6 +51,10 @@ public partial class ComponentJson
 {
 
 }
+public partial class NullComponent : ComponentJson
+{
+
+}
 
 public partial class Ifc5ClassComponent : ComponentJson
 {
