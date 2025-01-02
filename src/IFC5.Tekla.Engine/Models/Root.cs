@@ -53,7 +53,11 @@ public partial class ComponentJson
 }
 public partial class NullComponent : ComponentJson
 {
+    private static readonly NullComponent _instance = new NullComponent();
 
+    private NullComponent() { }
+
+    public static NullComponent Instance => _instance;
 }
 
 public partial class Ifc5ClassComponent : ComponentJson
