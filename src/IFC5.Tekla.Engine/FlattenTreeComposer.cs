@@ -10,6 +10,8 @@ namespace IFC5Tekla.Engine;
 internal class FlattenTreeComposer
 {
     private readonly IEnumerable<PrimJson> _jsonPrims;
+    private readonly Dictionary<string, List<string>> _relations = new();
+
     private readonly string _childSeparator = "__";
 
     public FlattenTreeComposer(IEnumerable<PrimJson> prims)
@@ -19,6 +21,8 @@ internal class FlattenTreeComposer
 
     public FlattenTree Compose()
     {
+        _relations.Clear();
+
         var prims = CollectTopLevelPrims();
         prims.AddRange(CollectChildrenPrims());
 
@@ -47,7 +51,10 @@ internal class FlattenTreeComposer
             {
                 var childName = GetChildName(jsonPrim, child);
 
-                children.Add(child.ToDomain(childName));
+                var domainChild = child.ToDomain(childName);
+                children.Add(domainChild);
+
+                AddRelation(jsonPrim.Name!, domainChild.Name);
             }
         }
 
@@ -57,6 +64,14 @@ internal class FlattenTreeComposer
     private string GetChildName(PrimJson parent, DefJson child)
     {
         return $"{parent.Name}{_childSeparator}{child.Name}";
+    }
+
+    private void AddRelation(string parentName, string childName)
+    {
+        if (_relations.ContainsKey(parentName))
+            _relations[parentName].Add(childName);
+        else
+            _relations[parentName] = new List<string> { childName };
     }
 }
 
@@ -69,3 +84,4 @@ public class FlattenTree
         Prims = prims ?? throw new ArgumentNullException(nameof(prims));
     }
 }
+
