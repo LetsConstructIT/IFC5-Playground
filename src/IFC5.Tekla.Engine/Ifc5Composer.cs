@@ -1,4 +1,5 @@
-﻿using IFC5Tekla.Engine.Models;
+﻿using IFC5Tekla.Engine.Domain;
+using IFC5Tekla.Engine.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,19 @@ namespace IFC5Tekla.Engine;
 internal class Ifc5Composer
 {
     private readonly string _childSeparator = "__";
-    public void Compose(List<PrimJson> prims)
+
+    public void Compose(IEnumerable<PrimJson> prims)
+    {
+        var domainPrims = new List<Prim>();
+
+        foreach (var prim in prims)
+        {
+
+
+        }
+    }
+
+    public void Compose2(List<PrimJson> prims)
     {
         var parentChildrenDictionary = new Dictionary<string, List<string>>();
         foreach (var prim in prims)
