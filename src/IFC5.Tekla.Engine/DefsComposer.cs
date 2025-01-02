@@ -11,13 +11,15 @@ namespace IFC5Tekla.Engine;
 internal class DefsComposer
 {
     private readonly RootPrims _rootPrims;
+    private readonly Overs _overs;
 
-    public DefsComposer(RootPrims rootPrims)
+    public DefsComposer(RootPrims rootPrims, Overs overs)
     {
         _rootPrims = rootPrims;
+        _overs = overs;
     }
 
-    internal ComposedObjects Compose(Overs overs)
+    internal ComposedObjects Compose()
     {
         var composed = new ComposedObjects();
 
@@ -27,7 +29,7 @@ internal class DefsComposer
                 continue;
 
             var composedDef = new ComposedDef(def.Name, def.Type, [def.Component]);
-            composedDef.Components.AddRange(overs.GetComponentsFor(composedDef.Name));
+            composedDef.Components.AddRange(_overs.GetComponentsFor(composedDef.Name));
 
             composed.Add(composedDef);
 
@@ -35,7 +37,7 @@ internal class DefsComposer
             {
                 if (child is Class innerClass)
                 {
-                    composedDef.Components.AddRange(overs.GetComponentsFor(innerClass.Name));
+                    composedDef.Components.AddRange(_overs.GetComponentsFor(innerClass.Name));
                 }
                 else if (child is Def innerDef)
                 {
