@@ -1,7 +1,10 @@
 ﻿using IFC5Tekla.Engine.Models;
 using System;
+using System.Diagnostics;
 
 namespace IFC5Tekla.Engine.Domain;
+
+[DebuggerDisplay("{Name}")]
 public class Prim
 {
     public string Name { get; }
