@@ -79,9 +79,33 @@ public class ComposedObject
         Components = components ?? throw new ArgumentNullException(nameof(components));
         Children = new List<ComposedObject>();
     }
+
+    public string GetFriendlyName()
+    {
+        if (Name.Contains("__"))
+            return Name.Substring(Name.IndexOf("__") + 2);
+        else
+            return Name;
+    }
 }
 
 public class ComposedObjects : List<ComposedObject>
 {
+    public void DummyPrint()
+    {
+        var level = 0;
 
+        foreach (var prim in this)
+            DummyPrint(prim, level);
+    }
+
+    private void DummyPrint(ComposedObject prim, int level)
+    {
+        Console.WriteLine($"{new string(' ', level)}{prim.GetFriendlyName()}");
+
+        foreach (var item in prim.Children)
+        {
+            DummyPrint(item, level + 1);
+        }
+    }
 }
