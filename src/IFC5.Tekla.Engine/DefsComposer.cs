@@ -17,7 +17,7 @@ internal class DefsComposer
         _rootPrims = rootPrims;
     }
 
-    internal ComposedObjects Compose()
+    internal ComposedObjects Compose(Overs overs)
     {
         var composed = new ComposedObjects();
 
@@ -26,6 +26,9 @@ internal class DefsComposer
             if (rootPrim is Def def)
             {
                 var composedDef = new ComposedDef(def.Name, def.Type, [def.Component]);
+                var matchingOvers = overs.GetOversFor(composedDef.Name);
+                if (matchingOvers.Any())
+                    composedDef.Components.AddRange(matchingOvers.Select(o => o.Component));
 
                 composed.Add(composedDef);
             }

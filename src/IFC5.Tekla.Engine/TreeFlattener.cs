@@ -102,7 +102,7 @@ public class FlattenedTree : IPrimGraph
     public IReadOnlyList<Prim> Prims { get; }
     public Dictionary<string, ChildNames> Relations { get; }
 
-    private Dictionary<string, Prim> _classesAndDefs;
+    private readonly Dictionary<string, Prim> _classesAndDefs;
 
     public FlattenedTree(IReadOnlyList<Prim> prims, Dictionary<string, ChildNames> _relations)
     {
@@ -129,6 +129,9 @@ public class FlattenedTree : IPrimGraph
         return _classesAndDefs[name];
     }
 
+    public Overs GetOvers()
+        => new Overs(Prims.OfType<Over>());
+
     public IEnumerable<Prim> GetNeighbours(Prim prim)
     {
         if (!Relations.ContainsKey(prim.Name))
@@ -142,6 +145,24 @@ public class FlattenedTree : IPrimGraph
         }
 
         return children;
+    }
+}
+
+public class Overs
+{
+    private readonly Dictionary<string, List<Over>> _overs;
+
+    public Overs(IEnumerable<Over> overs)
+    {
+        _overs = overs.GroupBy(o => o.Name).ToDictionary(g => g.Key, g => g.ToList());
+    }
+
+    public IReadOnlyList<Over> GetOversFor(string name)
+    {
+        if (_overs.ContainsKey(name))
+            return _overs[name];
+        else
+            return Array.Empty<Over>();
     }
 }
 

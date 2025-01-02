@@ -11,6 +11,6 @@ internal class Ifc5Composer
         var rootPrims = new TreeComposer(flattenedTree).Compose();
         rootPrims.DummyPrint();
 
-        new DefsComposer(rootPrims).Compose();
+        new DefsComposer(rootPrims).Compose(flattenedTree.GetOvers());
     }
 }
