@@ -9,6 +9,6 @@ internal class Program
     {
         var path = @"C:\Users\grzeg\Documents\IFC5\hello-wall.ifcx";
 
-        new Ifc5Reader().Read(path);
+        new Reader().Read(path);
     }
 }

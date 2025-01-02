@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace IFC5.Reader;
-internal class Ifc5Composer
+internal class Composer
 {
     public void Compose(IEnumerable<PrimJson> prims)
     {
