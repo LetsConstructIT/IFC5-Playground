@@ -99,10 +99,21 @@ public partial class OutputsSurfaceConnectComponent : ComponentJson
 public partial class UsdGeomMeshComponent : ComponentJson
 {
     [JsonProperty("faceVertexIndices")]
-    public long[]? FaceVertexIndices { get; set; }
+    public int[]? FaceVertexIndices { get; set; }
 
     [JsonProperty("points")]
     public double[][]? Points { get; set; }
+
+    [JsonProperty("faceVertexCounts")]
+    public int[]? FaceVertexCounts { get; set; }
+
+    public int GetFaceVertexCount()
+    {
+        if (FaceVertexCounts == null)
+            return 3;
+
+        return FaceVertexCounts[0];
+    }
 }
 
 public partial class UsdGeomBasisCurvesComponent : ComponentJson
