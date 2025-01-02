@@ -101,6 +101,18 @@ public class FlattenedTree
         Prims = prims ?? throw new ArgumentNullException(nameof(prims));
         Relations = _relations ?? throw new ArgumentNullException(nameof(_relations));
     }
+
+    public HashSet<string> FindRoots()
+    {
+        var roots = Prims.Where(p => p is Class || p is Def).Select(p => p.Name).ToHashSet();
+        foreach (var root in Relations)
+        {
+            foreach (var childName in root.Value)
+                roots.Remove(childName);
+        }
+
+        return roots;
+    }
 }
 
 public class ChildNames : List<string>
