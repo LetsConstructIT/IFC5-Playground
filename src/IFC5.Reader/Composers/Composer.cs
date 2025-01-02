@@ -1,7 +1,7 @@
 ﻿using IFC5.Reader.Models;
 using System.Collections.Generic;
 
-namespace IFC5.Reader;
+namespace IFC5.Reader.Composers;
 internal class Composer
 {
     public void Compose(IEnumerable<PrimJson> prims)

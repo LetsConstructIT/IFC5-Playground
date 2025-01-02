@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace IFC5.Reader;
+namespace IFC5.Reader.Composers;
 internal class TreeFlattener
 {
     private readonly IEnumerable<PrimJson> _jsonPrims;

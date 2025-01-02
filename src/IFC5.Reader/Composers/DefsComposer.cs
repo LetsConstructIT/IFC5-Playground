@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace IFC5.Reader;
+namespace IFC5.Reader.Composers;
 internal class DefsComposer
 {
     private readonly RootPrims _rootPrims;

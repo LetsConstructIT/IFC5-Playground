@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace IFC5.Reader;
+namespace IFC5.Reader.Composers;
 internal class TreeComposer
 {
     private readonly FlattenedTree _inputTree;

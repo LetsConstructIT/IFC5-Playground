@@ -1,4 +1,5 @@
-﻿using IFC5.Reader.Models;
+﻿using IFC5.Reader.Composers;
+using IFC5.Reader.Models;
 using Newtonsoft.Json;
 using System;
 using System.IO;
