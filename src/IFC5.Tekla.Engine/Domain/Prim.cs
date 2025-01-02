@@ -4,7 +4,7 @@ using System;
 namespace IFC5Tekla.Engine.Domain;
 public class Prim
 {
-    public string Name { get; set; }
+    public string Name { get; }
 
     public Prim(string name)
     {
@@ -14,21 +14,25 @@ public class Prim
 
 public class Class : Prim
 {
-    public string Type { get; set; }
+    public string Type { get; }
+    public string[] Inherits { get; }
 
-    public Class(string name, string type) : base(name)
+    public Class(string name, string[] inherits, string type) : base(name)
     {
+        Inherits = inherits ?? throw new ArgumentNullException(nameof(inherits));
         Type = type ?? throw new ArgumentNullException(nameof(type));
     }
 }
 
 public class Def : Prim
 {
-    public string Type { get; set; }
-    public ComponentJson Component { get; set; }
+    public string Type { get; }
+    public ComponentJson Component { get; }
+    public string[] Inherits { get; }
 
-    public Def(string name, string type, ComponentJson component) : base(name)
+    public Def(string name, string[] inherits, string type, ComponentJson component) : base(name)
     {
+        Inherits = inherits ?? throw new ArgumentNullException(nameof(inherits));
         Type = type ?? throw new ArgumentNullException(nameof(type));
         Component = component ?? throw new ArgumentNullException(nameof(component));
     }
@@ -36,7 +40,7 @@ public class Def : Prim
 
 public class Over : Prim
 {
-    public ComponentJson Component { get; set; }
+    public ComponentJson Component { get; }
 
     public Over(string name, ComponentJson component) : base(name)
     {
