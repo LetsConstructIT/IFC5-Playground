@@ -25,63 +25,63 @@ internal class DefsComposer
 
         foreach (var rootPrim in _rootPrims)
         {
-            if (rootPrim is not Def def)
-                continue;
-
-            composed.Add(Compose(def));
+            composed.Add(Compose(rootPrim));
         }
 
         return composed;
     }
 
-    private ComposedDef Compose(Def def)
+    private ComposedObject Compose(Prim prim)
     {
-        var composedDef = new ComposedDef(def.Name, def.Type, [def.Component]);
+        var type = string.Empty;
+        var components = new List<ComponentJson>();
+
+        if (prim is Def def)
+        {
+            type = def.Type;
+            components.Add(def.Component);
+        }
+
+        var composedDef = new ComposedObject(prim.Name, type, components);
         composedDef.Components.AddRange(_overs.GetComponentsFor(composedDef.Name));
 
-        foreach (var child in def.Children)
+        foreach (var child in prim.Children)
         {
-            if (child is Class innerClass)
+            var composedChild = Compose(child);
+
+            if (child is Def)
             {
-                composedDef.Components.AddRange(_overs.GetComponentsFor(innerClass.Name));
-
-                foreach (var innerChild in innerClass.Children.OfType<Def>())
-                    composedDef.Children.Add(Compose(innerChild));
-
-                // class inheriting class ??
-                var subclasses = innerClass.Children.OfType<Class>().ToList();
-                if (subclasses.Any())
-                {
-                    var test = subclasses.First();
-                }
+                composedDef.Children.Add(composedChild);
             }
-            else if (child is Def innerDef)
+            else if (child is Class) //flattening classes
             {
-                composedDef.Children.Add(Compose(innerDef));
+                composedDef.Children.AddRange(composedChild.Children);
+                composedDef.Components.AddRange(composedChild.Components);
             }
         }
+
         return composedDef;
     }
 }
 
 [DebuggerDisplay("{Name}")]
-public class ComposedDef
+public class ComposedObject
 {
     public string Name { get; }
     public string Type { get; }
     public List<ComponentJson> Components { get; }
-    public List<ComposedDef> Children { get; }
+    public List<ComposedObject> Children { get; }
 
-    public ComposedDef(string name, string type, List<ComponentJson> components)
+    public ComposedObject(string name, string type, List<ComponentJson> components)
     {
         Name = name ?? throw new ArgumentNullException(nameof(name));
         Type = type ?? throw new ArgumentNullException(nameof(type));
         Components = components ?? throw new ArgumentNullException(nameof(components));
-        Children = new List<ComposedDef>();
+        Children = new List<ComposedObject>();
     }
 }
 
-public class ComposedObjects : List<ComposedDef>
+public class ComposedObjects : List<ComposedObject>
 {
 
 }
