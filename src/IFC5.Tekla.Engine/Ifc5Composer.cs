@@ -9,17 +9,13 @@ using System.Threading.Tasks;
 namespace IFC5Tekla.Engine;
 internal class Ifc5Composer
 {
+
     private readonly string _childSeparator = "__";
 
     public void Compose(IEnumerable<PrimJson> prims)
     {
-        var domainPrims = new List<Prim>();
-
-        foreach (var prim in prims)
-        {
-
-
-        }
+        var flattenTree = new FlattenTreeComposer(prims);
+        flattenTree.Compose();
     }
 
     public void Compose2(List<PrimJson> prims)

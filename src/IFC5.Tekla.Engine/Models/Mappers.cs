@@ -16,6 +16,15 @@ public static class Mappers
         return new Def(json.Name, json.Type, component);
     }
 
+    public static Def ToDomain(this DefJson json, string overwrittenName)
+    {
+        var type = (json.Type is null || string.IsNullOrEmpty(json.Type)) ?
+            string.Empty : json.Type;
+
+        var component = json.Component is null ? new NullComponent() : json.Component;
+        return new Def(overwrittenName, type, component);
+    }
+
     public static Class ToDomain(this ClassJson json)
     {
         if (json.Name is null || string.IsNullOrEmpty(json.Name))
@@ -34,5 +43,16 @@ public static class Mappers
 
         var component = json.Component is null ? new NullComponent() : json.Component;
         return new Over(json.Name, component);
+    }
+
+    public static Prim ToDomain(this PrimJson primJson)
+    {
+        return primJson switch
+        {
+            ClassJson json => json.ToDomain(),
+            DefJson json => json.ToDomain(),
+            OverJson json => json.ToDomain(),
+            _ => throw new MappingException(nameof(primJson)),
+        };
     }
 }
