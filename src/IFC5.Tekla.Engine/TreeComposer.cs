@@ -1,4 +1,5 @@
 ﻿using IFC5Tekla.Engine.Domain;
+using System;
 using System.Collections.Generic;
 
 namespace IFC5Tekla.Engine;
@@ -55,5 +56,32 @@ internal class TreeComposer
 
 public class RootPrims : List<Prim>
 {
+
+    public void DummyPrint()
+    {
+        var level = 0;
+
+        foreach (var prim in this)
+            DummyPrint(prim, level);
+    }
+
+    private void DummyPrint(Prim prim, int level)
+    {
+        if (prim is Def def)
+            Console.WriteLine($"{new string(' ', level)}{FormatName(def.Name)}");
+
+        foreach (var item in prim.Children)
+        {
+            DummyPrint(item, level + 1);
+        }
+
+        string FormatName(string name)
+        {
+            if (name.Contains("__"))
+                return name.Substring(name.IndexOf("__") + 2);
+            else
+                return name;
+        }
+    }
 
 }

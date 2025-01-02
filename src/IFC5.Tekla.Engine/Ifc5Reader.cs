@@ -14,7 +14,7 @@ public class Ifc5Reader
         var ifcContent = JsonConvert.DeserializeObject<Root>(File.ReadAllText(path), Converter.Settings)!;
 
         new Ifc5Composer().Compose(ifcContent.Where(i => i is not null).ToList());
-        Console.WriteLine(ifcContent.Count());
+
         Console.ReadLine();
     }
 }
