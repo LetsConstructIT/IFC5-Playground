@@ -11,7 +11,7 @@ namespace IFC5.Reader.UnitTests
         {
             var path = @"C:\Users\grzeg\Documents\IFC5\hello-wall.ifcx";
 
-            var composedObjects = new Reader().Read(path);
+            var composedObjects = new IFC5.Reader.Reader().Read(path);
         }
     }
 }
