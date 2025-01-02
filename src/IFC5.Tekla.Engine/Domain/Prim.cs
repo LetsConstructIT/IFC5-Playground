@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace IFC5Tekla.Engine.Domain;
 
@@ -15,6 +16,12 @@ public class Prim
     {
         Name = name ?? throw new ArgumentNullException(nameof(name));
         Children = new List<Prim>();
+    }
+
+    public string CleanInheritName(string input)
+    {
+        var offset = 2; // first two chars are </
+        return input.Substring(offset, input.Length - offset - 1);
     }
 
     public override int GetHashCode() => Name.GetHashCode();
@@ -33,7 +40,7 @@ public class Class : Prim
 
     public Class(string name, string[] inherits, string type) : base(name)
     {
-        Inherits = inherits ?? throw new ArgumentNullException(nameof(inherits));
+        Inherits = inherits.Select(CleanInheritName).ToArray();
         Type = type ?? throw new ArgumentNullException(nameof(type));
     }
 }
@@ -46,7 +53,7 @@ public class Def : Prim
 
     public Def(string name, string[] inherits, string type, ComponentJson component) : base(name)
     {
-        Inherits = inherits ?? throw new ArgumentNullException(nameof(inherits));
+        Inherits = inherits.Select(CleanInheritName).ToArray();
         Type = type ?? throw new ArgumentNullException(nameof(type));
         Component = component ?? throw new ArgumentNullException(nameof(component));
     }

@@ -69,13 +69,13 @@ internal class TreeFlattener
     {
         foreach (var parent in prims.OfType<Def>().Where(p => p.Inherits.Length > 0))
         {
-            foreach (var inherit in parent.Inherits.Select(GetInheritName))
+            foreach (var inherit in parent.Inherits)
                 AddRelation(parent.Name, inherit);
         }
 
         foreach (var parent in prims.OfType<Class>().Where(p => p.Inherits.Length > 0))
         {
-            foreach (var inherit in parent.Inherits.Select(GetInheritName))
+            foreach (var inherit in parent.Inherits)
                 AddRelation(parent.Name, inherit);
         }
     }
@@ -83,12 +83,6 @@ internal class TreeFlattener
     private string GetChildName(PrimJson parent, DefJson child)
     {
         return $"{parent.Name}{_childSeparator}{child.Name}";
-    }
-
-    public string GetInheritName(string input)
-    {
-        var offset = 2; // first two chars are </
-        return input.Substring(offset, input.Length - offset - 1);
     }
 }
 
