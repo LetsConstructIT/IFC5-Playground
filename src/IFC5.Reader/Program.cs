@@ -10,5 +10,7 @@ internal class Program
         var path = @"C:\Users\grzeg\Documents\IFC5\hello-wall.ifcx";
 
         new Reader().Read(path);
+
+        Console.ReadLine();
     }
 }
