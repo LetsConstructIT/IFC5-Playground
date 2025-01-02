@@ -43,12 +43,11 @@ internal class TreeComposer
             if (!visited.Add(current))
                 continue;
 
-            var children = graph.GetNeighbours(current)
-                                  .Where(n => !visited.Contains(n));
-
-            foreach (var child in children.Reverse())
+            foreach (var child in graph.GetNeighbours(current))
             {
+                if (!visited.Contains(child))
                 stack.Push(child);
+
                 current.Children.Add(child);
             }
         }
