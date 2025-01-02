@@ -3,7 +3,6 @@ using IFC5Tekla.Engine.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static IFC5Tekla.Engine.TreeComposer;
 
 namespace IFC5Tekla.Engine;
 internal class TreeFlattener
