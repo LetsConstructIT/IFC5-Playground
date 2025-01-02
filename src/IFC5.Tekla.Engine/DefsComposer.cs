@@ -28,25 +28,39 @@ internal class DefsComposer
             if (rootPrim is not Def def)
                 continue;
 
-            var composedDef = new ComposedDef(def.Name, def.Type, [def.Component]);
-            composedDef.Components.AddRange(_overs.GetComponentsFor(composedDef.Name));
-
-            composed.Add(composedDef);
-
-            foreach (var child in def.Children)
-            {
-                if (child is Class innerClass)
-                {
-                    composedDef.Components.AddRange(_overs.GetComponentsFor(innerClass.Name));
-                }
-                else if (child is Def innerDef)
-                {
-
-                }
-            }
+            composed.Add(Compose(def));
         }
 
         return composed;
+    }
+
+    private ComposedDef Compose(Def def)
+    {
+        var composedDef = new ComposedDef(def.Name, def.Type, [def.Component]);
+        composedDef.Components.AddRange(_overs.GetComponentsFor(composedDef.Name));
+
+        foreach (var child in def.Children)
+        {
+            if (child is Class innerClass)
+            {
+                composedDef.Components.AddRange(_overs.GetComponentsFor(innerClass.Name));
+
+                foreach (var innerChild in innerClass.Children.OfType<Def>())
+                    composedDef.Children.Add(Compose(innerChild));
+
+                // class inheriting class ??
+                var subclasses = innerClass.Children.OfType<Class>().ToList();
+                if (subclasses.Any())
+                {
+                    var test = subclasses.First();
+                }
+            }
+            else if (child is Def innerDef)
+            {
+                composedDef.Children.Add(Compose(innerDef));
+            }
+        }
+        return composedDef;
     }
 }
 
