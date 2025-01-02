@@ -9,7 +9,7 @@ namespace IFC5Tekla.Engine;
 internal class Ifc5Composer
 {
     private readonly string _childSeparator = "__";
-    public void Compose(List<Prim> prims)
+    public void Compose(List<PrimJson> prims)
     {
         var parentChildrenDictionary = new Dictionary<string, List<string>>();
         foreach (var prim in prims)
@@ -66,9 +66,9 @@ internal class Ifc5Composer
             }
         }
 
-        var classes = prims.Where(p => p is Class).ToList();
-        var defs = prims.Where(p => p is Def).ToList();
-        var overs = prims.Where(p => p is Over).ToList();
+        var classes = prims.Where(p => p is ClassJson).ToList();
+        var defs = prims.Where(p => p is DefJson).ToList();
+        var overs = prims.Where(p => p is OverJson).ToList();
 
 
         var dictionary = Flatten(prims);
@@ -91,14 +91,14 @@ internal class Ifc5Composer
         var count = dictionary.Count;
     }
 
-    private string GetChildName(Prim parent, Def child)
+    private string GetChildName(PrimJson parent, DefJson child)
     {
         return $"{parent.Name}{_childSeparator}{child.Name}";
     }
 
-    private static Dictionary<string, List<Prim>> Flatten(List<Prim> prims)
+    private static Dictionary<string, List<PrimJson>> Flatten(List<PrimJson> prims)
     {
-        var dictionary = new Dictionary<string, List<Prim>>();
+        var dictionary = new Dictionary<string, List<PrimJson>>();
         foreach (var prim in prims)
         {
             if (prim is null || string.IsNullOrEmpty(prim.Name)) continue;
@@ -107,7 +107,7 @@ internal class Ifc5Composer
             if (dictionary.ContainsKey(name))
                 dictionary[name].Add(prim);
             else
-                dictionary[name] = new List<Prim>() { prim };
+                dictionary[name] = new List<PrimJson>() { prim };
         }
 
         return dictionary;

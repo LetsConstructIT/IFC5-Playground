@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace IFC5Tekla.Engine.Models;
 
-public partial class Root : List<Prim>
+public partial class Root : List<PrimJson>
 {
 }
 
@@ -18,7 +18,7 @@ public partial class Disclaimer
     public string? Note { get; set; }
 }
 
-public partial class Prim
+public partial class PrimJson
 {
     [JsonProperty("name")]
     public string? Name { get; set; }
@@ -39,20 +39,20 @@ public partial class Prim
 
 public interface IParent
 {
-    public Def[]? Children { get; set; }
+    public DefJson[]? Children { get; set; }
 }
 
 public interface IComponentable
 {
-    public Component? Component { get; set; }
+    public ComponentJson? Component { get; set; }
 }
 
-public partial class Component
+public partial class ComponentJson
 {
 
 }
 
-public partial class Ifc5ClassComponent : Component
+public partial class Ifc5ClassComponent : ComponentJson
 {
     [JsonProperty("code")]
     public string? Code { get; set; }
@@ -61,7 +61,7 @@ public partial class Ifc5ClassComponent : Component
     public string? Uri { get; set; }
 }
 
-public partial class NlsfbClassComponent : Component
+public partial class NlsfbClassComponent : ComponentJson
 {
     [JsonProperty("code")]
     public string? Code { get; set; }
@@ -70,25 +70,25 @@ public partial class NlsfbClassComponent : Component
     public Uri? Uri { get; set; }
 }
 
-public partial class Ifc5PropertiesComponent : Component
+public partial class Ifc5PropertiesComponent : ComponentJson
 {
     [JsonProperty("IsExternal")]
     public long IsExternal { get; set; }
 }
 
-public partial class UsdShadeMaterialBindingApiComponent : Component
+public partial class UsdShadeMaterialBindingApiComponent : ComponentJson
 {
     [JsonProperty("material:binding")]
     public OutputsSurfaceConnectComponent? MaterialBinding { get; set; }
 }
 
-public partial class OutputsSurfaceConnectComponent : Component
+public partial class OutputsSurfaceConnectComponent : ComponentJson
 {
     [JsonProperty("ref")]
     public string? Ref { get; set; }
 }
 
-public partial class UsdGeomMeshComponent : Component
+public partial class UsdGeomMeshComponent : ComponentJson
 {
     [JsonProperty("faceVertexIndices")]
     public long[]? FaceVertexIndices { get; set; }
@@ -97,25 +97,25 @@ public partial class UsdGeomMeshComponent : Component
     public double[][]? Points { get; set; }
 }
 
-public partial class UsdGeomBasisCurvesComponent : Component
+public partial class UsdGeomBasisCurvesComponent : ComponentJson
 {
     [JsonProperty("points")]
     public long[][]? Points { get; set; }
 }
 
-public partial class XformOpComponent : Component
+public partial class XformOpComponent : ComponentJson
 {
     [JsonProperty("transform")]
     public double[][]? Transform { get; set; }
 }
 
-public partial class UsdGeomVisibilityApiVisibilityComponent : Component
+public partial class UsdGeomVisibilityApiVisibilityComponent : ComponentJson
 {
     [JsonProperty("visibility")]
     public string? Visibility { get; set; }
 }
 
-public partial class UsdShadeShaderComponent : Component
+public partial class UsdShadeShaderComponent : ComponentJson
 {
     [JsonProperty("info:id")]
     public string? Id { get; set; }
@@ -127,7 +127,7 @@ public partial class UsdShadeShaderComponent : Component
     public string? Surface { get; set; }
 }
 
-public partial class Ifc5SpaceboundaryComponent : Component
+public partial class Ifc5SpaceboundaryComponent : ComponentJson
 {
     [JsonProperty("relatedElement")]
     public OutputsSurfaceConnect? RelatedElement { get; set; }
@@ -139,37 +139,37 @@ public partial class OutputsSurfaceConnect
     public string? Ref { get; set; }
 }
 
-public partial class CustomDataComponent : Component
+public partial class CustomDataComponent : ComponentJson
 {
     [JsonProperty("originalStepInstance")]
     public string? OriginalStepInstance { get; set; }
 }
 
-public partial class Def : Prim, IParent, IComponentable
+public partial class DefJson : PrimJson, IParent, IComponentable
 {
     [JsonProperty("type")]
     public string? Type { get; set; }
 
     [JsonProperty("children")]
-    public Def[]? Children { get; set; }
+    public DefJson[]? Children { get; set; }
 
     [JsonProperty("attributes")]
-    public Component? Component { get; set; }
+    public ComponentJson? Component { get; set; }
 }
 
-public partial class Class : Prim, IParent
+public partial class ClassJson : PrimJson, IParent
 {
     [JsonProperty("type")]
     public string? Type { get; set; }
 
     [JsonProperty("children")]
-    public Def[]? Children { get; set; }
+    public DefJson[]? Children { get; set; }
 }
 
-public partial class Over : Prim, IComponentable
+public partial class OverJson : PrimJson, IComponentable
 {
     [JsonProperty("attributes")]
-    public Component? Component { get; set; }
+    public ComponentJson? Component { get; set; }
 }
 
 internal static class Converter
@@ -186,23 +186,23 @@ internal static class Converter
     };
 }
 
-internal class PrimConverter : JsonConverter<Prim>
+internal class PrimConverter : JsonConverter<PrimJson>
 {
-    public override Prim? ReadJson(JsonReader reader, Type objectType, Prim? existingValue, bool hasExistingValue, JsonSerializer serializer)
+    public override PrimJson? ReadJson(JsonReader reader, Type objectType, PrimJson? existingValue, bool hasExistingValue, JsonSerializer serializer)
     {
         var jObj = JObject.Load(reader);
 
         return ReadPrim(jObj);
     }
 
-    private Prim? ReadPrim(JObject jObj)
+    private PrimJson? ReadPrim(JObject jObj)
     {
         if (!jObj.ContainsKey("def"))
             return null;
 
         var readObject = jObj.ToObject(GetDefType(jObj.Value<string>("def")!));
 
-        if (readObject is not Prim prim)
+        if (readObject is not PrimJson prim)
             return null;
 
         if (readObject is IParent parent)
@@ -218,7 +218,7 @@ internal class PrimConverter : JsonConverter<Prim>
         return prim;
     }
 
-    private Def[]? ReadChildren(JObject jObj)
+    private DefJson[]? ReadChildren(JObject jObj)
     {
         if (!jObj.ContainsKey("children"))
             return null;
@@ -227,21 +227,21 @@ internal class PrimConverter : JsonConverter<Prim>
         if (jChildren is not JArray array)
             return null;
 
-        var children = new List<Def>();
+        var children = new List<DefJson>();
         foreach (var child in array)
         {
             if (child is not JObject jObject)
                 continue;
 
             var prim = ReadPrim(jObject);
-            if (prim is Def def)
+            if (prim is DefJson def)
                 children.Add(def);
         }
 
         return children.ToArray();
     }
 
-    private Component? ReadComponent(JObject jObj)
+    private ComponentJson? ReadComponent(JObject jObj)
     {
         if (!jObj.ContainsKey("attributes"))
             return null;
@@ -254,25 +254,25 @@ internal class PrimConverter : JsonConverter<Prim>
                 return null;
 
             var readObject = property.Value.ToObject(componentType);
-            if (readObject is Component component)
+            if (readObject is ComponentJson component)
                 return component;
         }
         else // strange UsdShade:Shader, not wrapped in single property
         {
             var readObject = jChildren!.ToObject(typeof(UsdShadeShaderComponent));
-            if (readObject is Component component)
+            if (readObject is ComponentJson component)
                 return component;
         }
-        return new Component();
+        return new ComponentJson();
     }
 
     private Type GetDefType(string typeName)
     {
         return typeName switch
         {
-            "def" => typeof(Def),
-            "class" => typeof(Class),
-            "over" => typeof(Over),
+            "def" => typeof(DefJson),
+            "class" => typeof(ClassJson),
+            "over" => typeof(OverJson),
             _ => throw new InvalidCastException()
         };
     }
@@ -295,7 +295,7 @@ internal class PrimConverter : JsonConverter<Prim>
         };
     }
 
-    public override void WriteJson(JsonWriter writer, Prim? value, JsonSerializer serializer)
+    public override void WriteJson(JsonWriter writer, PrimJson? value, JsonSerializer serializer)
     {
         throw new NotImplementedException();
     }
