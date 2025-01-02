@@ -151,12 +151,12 @@ public class Overs
         _overs = overs.GroupBy(o => o.Name).ToDictionary(g => g.Key, g => g.ToList());
     }
 
-    public IReadOnlyList<Over> GetOversFor(string name)
+    public IEnumerable<ComponentJson> GetComponentsFor(string name)
     {
         if (_overs.ContainsKey(name))
-            return _overs[name];
+            return _overs[name].Select(o => o.Component);
         else
-            return Array.Empty<Over>();
+            return Array.Empty<ComponentJson>();
     }
 }
 

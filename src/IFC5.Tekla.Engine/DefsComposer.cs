@@ -23,14 +23,24 @@ internal class DefsComposer
 
         foreach (var rootPrim in _rootPrims)
         {
-            if (rootPrim is Def def)
-            {
-                var composedDef = new ComposedDef(def.Name, def.Type, [def.Component]);
-                var matchingOvers = overs.GetOversFor(composedDef.Name);
-                if (matchingOvers.Any())
-                    composedDef.Components.AddRange(matchingOvers.Select(o => o.Component));
+            if (rootPrim is not Def def)
+                continue;
 
-                composed.Add(composedDef);
+            var composedDef = new ComposedDef(def.Name, def.Type, [def.Component]);
+            composedDef.Components.AddRange(overs.GetComponentsFor(composedDef.Name));
+
+            composed.Add(composedDef);
+
+            foreach (var child in def.Children)
+            {
+                if (child is Class innerClass)
+                {
+                    composedDef.Components.AddRange(overs.GetComponentsFor(innerClass.Name));
+                }
+                else if (child is Def innerDef)
+                {
+
+                }
             }
         }
 
