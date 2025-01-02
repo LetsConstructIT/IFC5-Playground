@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IFC5.Reader", "IFC5.Tekla.Engine\IFC5.Reader.csproj", "{E1D5ACD7-589D-42DB-9D3D-2F9F45934B4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IFC5.Reader", "IFC5.Reader\IFC5.Reader.csproj", "{E1D5ACD7-589D-42DB-9D3D-2F9F45934B4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
