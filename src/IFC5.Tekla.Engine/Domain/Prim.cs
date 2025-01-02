@@ -1,5 +1,6 @@
 ﻿using IFC5Tekla.Engine.Models;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace IFC5Tekla.Engine.Domain;
@@ -8,10 +9,12 @@ namespace IFC5Tekla.Engine.Domain;
 public class Prim
 {
     public string Name { get; }
+    public List<Prim> Children { get; }
 
     public Prim(string name)
     {
         Name = name ?? throw new ArgumentNullException(nameof(name));
+        Children = new List<Prim>();
     }
 }
 

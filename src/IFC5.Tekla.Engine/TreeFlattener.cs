@@ -3,6 +3,7 @@ using IFC5Tekla.Engine.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static IFC5Tekla.Engine.TreeComposer;
 
 namespace IFC5Tekla.Engine;
 internal class TreeFlattener
@@ -91,20 +92,29 @@ internal class TreeFlattener
     }
 }
 
-public class FlattenedTree
+public interface IPrimGraph
+{
+    IEnumerable<Prim> GetNeighbours(Prim prim);
+}
+
+public class FlattenedTree : IPrimGraph
 {
     public IReadOnlyList<Prim> Prims { get; }
     public Dictionary<string, ChildNames> Relations { get; }
+
+    private Dictionary<string, Prim> _classesAndDefs;
 
     public FlattenedTree(IReadOnlyList<Prim> prims, Dictionary<string, ChildNames> _relations)
     {
         Prims = prims ?? throw new ArgumentNullException(nameof(prims));
         Relations = _relations ?? throw new ArgumentNullException(nameof(_relations));
+
+        _classesAndDefs = Prims.Where(p => p is Class || p is Def).ToDictionary(p => p.Name);
     }
 
-    public HashSet<string> FindRoots()
+    public IReadOnlyList<string> FindRoots()
     {
-        var roots = Prims.Where(p => p is Class || p is Def).Select(p => p.Name).ToHashSet();
+        var roots = _classesAndDefs.Keys.ToList();
         foreach (var root in Relations)
         {
             foreach (var childName in root.Value)
@@ -112,6 +122,26 @@ public class FlattenedTree
         }
 
         return roots;
+    }
+
+    public Prim GetPrim(string name)
+    {
+        return _classesAndDefs[name];
+    }
+
+    public IEnumerable<Prim> GetNeighbours(Prim prim)
+    {
+        if (!Relations.ContainsKey(prim.Name))
+            return Enumerable.Empty<Prim>();
+
+        var children = new List<Prim>();
+        foreach (var childName in Relations[prim.Name])
+        {
+            if (_classesAndDefs.ContainsKey(childName))
+                children.Add(_classesAndDefs[childName]);
+        }
+
+        return children;
     }
 }
 
