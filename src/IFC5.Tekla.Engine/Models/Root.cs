@@ -25,6 +25,16 @@ public partial class Prim
 
     [JsonProperty("inherits")]
     public string[]? Inherits { get; set; }
+
+    public string? GetValidInherit()
+    {
+        if (Inherits is null || Inherits.Length != 1)
+            return null;
+
+        var inherit = Inherits[0];
+        var offset = 2;
+        return inherit.Substring(offset, inherit.Length - offset - 1);
+    }
 }
 
 public interface IParent
