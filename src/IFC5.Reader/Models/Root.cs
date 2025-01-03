@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 
 namespace IFC5.Reader.Models;
 
@@ -120,6 +121,20 @@ public partial class UsdGeomMeshComponent : ComponentJson
         {
             [$"{nameof(UsdGeomMeshComponent)}:faceVertexIndices"] = $"[{string.Join(",", FaceVertexIndices!)}]"
         };
+
+        if (FaceVertexCounts is not null)
+            attributes[$"{nameof(UsdGeomMeshComponent)}:faceVertexCounts"] = $"[{string.Join(",", FaceVertexCounts!)}]";
+
+        var sb = new StringBuilder();
+        sb.Append('[');
+        foreach (var point in Points!)
+        {
+            sb.Append($"[{string.Join(",", point)}],");
+        }
+        sb.Length--;
+        sb.Append(']');
+
+        attributes[$"{nameof(UsdGeomMeshComponent)}:points"] = sb.ToString();
 
         return true;
     }
