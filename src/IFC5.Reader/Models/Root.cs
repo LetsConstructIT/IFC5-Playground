@@ -106,14 +106,6 @@ public partial class UsdGeomMeshComponent : ComponentJson
 
     [JsonProperty("faceVertexCounts")]
     public int[]? FaceVertexCounts { get; set; }
-
-    public int GetFaceVertexCount()
-    {
-        if (FaceVertexCounts == null)
-            return 3;
-
-        return FaceVertexCounts[0];
-    }
 }
 
 public partial class UsdGeomBasisCurvesComponent : ComponentJson
