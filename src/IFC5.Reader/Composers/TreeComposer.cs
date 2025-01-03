@@ -77,8 +77,8 @@ public class RootPrims : List<Prim>
 
         string FormatName(string name)
         {
-            if (name.Contains("__"))
-                return name.Substring(name.IndexOf("__") + 2);
+            if (name.Contains(Constants.ChildSeparator))
+                return name.Substring(name.IndexOf(Constants.ChildSeparator) + 2);
             else
                 return name;
         }

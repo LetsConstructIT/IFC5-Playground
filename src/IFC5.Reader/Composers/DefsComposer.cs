@@ -81,8 +81,8 @@ public class ComposedObject
 
     public string GetFriendlyName()
     {
-        if (Name.Contains("__"))
-            return Name.Substring(Name.IndexOf("__") + 2);
+        if (Name.Contains(Constants.ChildSeparator))
+            return Name.Substring(Name.IndexOf(Constants.ChildSeparator) + 2);
         else
             return Name;
     }

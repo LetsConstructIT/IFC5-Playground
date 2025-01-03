@@ -10,8 +10,6 @@ internal class TreeFlattener
     private readonly IEnumerable<PrimJson> _jsonPrims;
     private readonly Dictionary<string, ChildNames> _relations = new();
 
-    private readonly string _childSeparator = "__";
-
     public TreeFlattener(IEnumerable<PrimJson> prims)
     {
         _jsonPrims = prims ?? throw new ArgumentNullException(nameof(prims));
@@ -81,7 +79,7 @@ internal class TreeFlattener
 
     private string GetChildName(PrimJson parent, DefJson child)
     {
-        return $"{parent.Name}{_childSeparator}{child.Name}";
+        return $"{parent.Name}{Constants.ChildSeparator}{child.Name}";
     }
 }
 
