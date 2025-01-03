@@ -13,7 +13,7 @@ public class Reader
 
     public ComposedObjects Read(string path)
     {
-        var ifcContent = JsonConvert.DeserializeObject<Root>(File.ReadAllText(path), Converter.Settings)!;
+        var ifcContent = JsonConvert.DeserializeObject<Root>(File.ReadAllText(path), Ifc5JsonConverter.Settings)!;
 
         var composedObjects = _ifc5Composer.Compose(ifcContent.Where(i => i is not null));
 
