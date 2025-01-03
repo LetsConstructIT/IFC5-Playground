@@ -6,6 +6,7 @@ using System.Linq;
 using IFC5.Reader.Composers;
 using IFC5.Reader.Models;
 using System;
+using Rhino.DocObjects;
 
 namespace IFC5.RhinoImport;
 internal class Ifc5Inserter
@@ -46,6 +47,8 @@ internal class Ifc5Inserter
 
     private void InsertObject(RhinoDoc doc, ComposedObject composedObject, Transform transformation, Color material)
     {
+        var layerIndex = CreateOrReuseLayer(doc, composedObject);
+
         transformation = AdjustTransformation(composedObject.Components, transformation);
         material = AdjustMaterial(composedObject.Components, material);
 
@@ -54,13 +57,28 @@ internal class Ifc5Inserter
             var mesh = _meshCreator.CreateRhinoMesh(usdGeomMesh);
             mesh.Transform(transformation);
             mesh.VertexColors.CreateMonotoneMesh(material);
-            doc.Objects.Add(mesh);
+            var attributes = new ObjectAttributes();
+            if (layerIndex != -1)
+                attributes.LayerIndex = layerIndex;
+
+            doc.Objects.Add(mesh, attributes);
         }
 
         foreach (var child in composedObject.Children)
         {
             InsertObject(doc, child, transformation, material);
         }
+    }
+
+    private int CreateOrReuseLayer(RhinoDoc doc, ComposedObject composedObject)
+    {
+        var name = composedObject.GetFriendlyName();
+        var existingLayer = doc.Layers.FindName(name);
+
+        if (existingLayer != null)
+            return existingLayer.Index;
+        else
+            return doc.Layers.Add(new Layer() { Name = name });
     }
 
     private Color AdjustMaterial(List<ComponentJson> components, Color material)
