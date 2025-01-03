@@ -6,9 +6,15 @@ public class SampleUsage
     [TestMethod]
     public void ReadingFromFile()
     {
-        var path = @"C:\Users\grzeg\Documents\IFC5\hello-wall.ifcx";
-        var path2 = @"C:\Users\grzeg\Documents\IFC5\ifc-silly-sample-scene-building.ifcx";
+        var path = GetSamplesPath("hello-wall.ifcx");
 
-        var composedObjects = new IFC5.Reader.Reader().Read(path2);
+        var composedObjects = new Reader().Read(path);
+    }
+
+    private string GetSamplesPath(string fileName)
+    {
+        var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)!;
+        var path = Path.Combine(directory, "Samples", fileName);
+        return path;
     }
 }
