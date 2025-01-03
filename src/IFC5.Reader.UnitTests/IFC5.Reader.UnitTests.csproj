@@ -20,4 +20,14 @@
     <ProjectReference Include="..\IFC5.Reader\IFC5.Reader.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Samples\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Samples\hello-wall.ifcx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
