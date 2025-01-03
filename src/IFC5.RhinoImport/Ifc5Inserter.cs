@@ -23,7 +23,7 @@ internal class Ifc5Inserter
 
         foreach (var composedObject in composedObjects.Except(rawMaterials))
         {
-            AddMesh(doc, composedObject, transformation, material);
+            InsertObject(doc, composedObject, transformation, material);
         }
     }
 
@@ -44,7 +44,7 @@ internal class Ifc5Inserter
         }
     }
 
-    private void AddMesh(RhinoDoc doc, ComposedObject composedObject, Transform transformation, Color material)
+    private void InsertObject(RhinoDoc doc, ComposedObject composedObject, Transform transformation, Color material)
     {
         transformation = AdjustTransformation(composedObject.Components, transformation);
         material = AdjustMaterial(composedObject.Components, material);
@@ -59,7 +59,7 @@ internal class Ifc5Inserter
 
         foreach (var child in composedObject.Children)
         {
-            AddMesh(doc, child, transformation, material);
+            InsertObject(doc, child, transformation, material);
         }
     }
 
