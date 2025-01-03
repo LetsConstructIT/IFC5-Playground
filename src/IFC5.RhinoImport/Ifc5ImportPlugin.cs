@@ -2,6 +2,8 @@
 using IFC5.Reader.Models;
 using Rhino;
 using Rhino.Geometry;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace IFC5.RhinoImport;
@@ -39,20 +41,13 @@ public class Ifc5ImportPlugin : Rhino.PlugIns.FileImportPlugIn
 
     private void AddMesh(RhinoDoc doc, ComposedObject composedObject, Transform transformation)
     {
-        var xForms = composedObject.Components.OfType<XformOpComponent>().ToList();
-        if (xForms.Count > 0)
-        {
-            var xForm = xForms.Last();
-
-            var transformationToAdd = xForm.ToRhino();
-            transformation = transformation * transformationToAdd;
-        }
+        transformation = AdjustTransformation(composedObject.Components, transformation);
 
         var usdGeomMeshes = composedObject.Components.OfType<UsdGeomMeshComponent>().ToList();
         if (usdGeomMeshes.Any() && ShouldBeVisible(composedObject))
         {
             var usdGeomMesh = usdGeomMeshes.Last();
-            var mesh = _meshCreator.CreateRhinoMesh(usdGeomMesh, xForms.LastOrDefault());
+            var mesh = _meshCreator.CreateRhinoMesh(usdGeomMesh);
             mesh.Transform(transformation);
             doc.Objects.Add(mesh);
         }
@@ -61,6 +56,16 @@ public class Ifc5ImportPlugin : Rhino.PlugIns.FileImportPlugIn
         {
             AddMesh(doc, child, transformation);
         }
+    }
+
+    private Transform AdjustTransformation(List<ComponentJson> components, Transform transformation)
+    {
+        var xForms = components.OfType<XformOpComponent>();
+        if (!xForms.Any())
+            return transformation;
+
+        var transformationToAdd = xForms.Last().ToRhino();
+        return transformation * transformationToAdd;
     }
 
     private bool ShouldBeVisible(ComposedObject composedObject)

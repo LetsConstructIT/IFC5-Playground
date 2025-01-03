@@ -1,17 +1,11 @@
-﻿using Eto.Forms.ThemedControls;
-using IFC5.Reader.Models;
+﻿using IFC5.Reader.Models;
 using Rhino.Geometry;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IFC5.RhinoImport;
 internal class MeshCreator
 {
 
-    public Mesh CreateRhinoMesh(UsdGeomMeshComponent usdGeomMesh, XformOpComponent xformOpComponent)
+    public Mesh CreateRhinoMesh(UsdGeomMeshComponent usdGeomMesh)
     {
         var mesh = new Mesh();
         foreach (var coords in usdGeomMesh.Points)
@@ -27,11 +21,6 @@ internal class MeshCreator
         }
 
         mesh.Normals.ComputeNormals();
-
-        if (xformOpComponent is not null)
-        {
-            var transformation = xformOpComponent.Transform;
-        }
 
         return mesh;
     }
