@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace IFC5.Reader.Models;
 
-internal class Ifc5JsonConverter
+internal class Ifc5JsonDeserializer
 {
     public Root Deserialize(string rawJson)
     {

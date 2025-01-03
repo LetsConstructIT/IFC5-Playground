@@ -1,7 +1,5 @@
 ﻿using IFC5.Reader.Composers;
 using IFC5.Reader.Models;
-using IFC5.Reader.Models.DTOs;
-using Newtonsoft.Json;
 using System.IO;
 using System.Linq;
 
@@ -9,7 +7,7 @@ namespace IFC5.Reader;
 
 public class Reader
 {
-    private readonly Ifc5JsonConverter _ifc5JsonConverter = new();
+    private readonly Ifc5JsonDeserializer _ifc5JsonConverter = new();
     private readonly Composer _ifc5Composer = new();
 
     public ComposedObjects Read(string path)
