@@ -1,12 +1,20 @@
-﻿using Newtonsoft.Json;
+﻿using IFC5.Reader.Models.DTOs;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Globalization;
 
 namespace IFC5.Reader.Models;
 
-internal static class Ifc5JsonConverter
+internal class Ifc5JsonConverter
 {
-    public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
+    public Root Deserialize(string rawJson)
+    {
+        var ifcContent = JsonConvert.DeserializeObject<Root>(rawJson, Settings)!;
+
+        return ifcContent;
+    }
+
+    private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
     {
         MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
         DateParseHandling = DateParseHandling.None,

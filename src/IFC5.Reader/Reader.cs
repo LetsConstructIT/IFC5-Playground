@@ -9,11 +9,12 @@ namespace IFC5.Reader;
 
 public class Reader
 {
+    private readonly Ifc5JsonConverter _ifc5JsonConverter = new();
     private readonly Composer _ifc5Composer = new();
 
     public ComposedObjects Read(string path)
     {
-        var ifcContent = JsonConvert.DeserializeObject<Root>(File.ReadAllText(path), Ifc5JsonConverter.Settings)!;
+        var ifcContent = _ifc5JsonConverter.Deserialize(File.ReadAllText(path));
 
         var composedObjects = _ifc5Composer.Compose(ifcContent.Where(i => i is not null));
 
