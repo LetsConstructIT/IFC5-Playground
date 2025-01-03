@@ -58,8 +58,8 @@ internal class TreeFlattener
 
     private void AddRelation(string parentName, string childName)
     {
-        if (_relations.ContainsKey(parentName))
-            _relations[parentName].Add(childName);
+        if (_relations.TryGetValue(parentName, out ChildNames? value))
+            value.Add(childName);
         else
             _relations[parentName] = new ChildNames { childName };
     }
@@ -136,14 +136,14 @@ public class FlattenedTree : IPrimGraph
 
     public IEnumerable<Prim> GetNeighbours(Prim prim)
     {
-        if (!Relations.ContainsKey(prim.Name))
-            return Enumerable.Empty<Prim>();
+        if (!Relations.TryGetValue(prim.Name, out ChildNames? value))
+            return [];
 
         var children = new List<Prim>();
-        foreach (var childName in Relations[prim.Name])
+        foreach (var childName in value)
         {
-            if (_classesAndDefs.ContainsKey(childName))
-                children.Add(_classesAndDefs[childName]);
+            if (_classesAndDefs.TryGetValue(childName, out Prim? foundPrim))
+                children.Add(foundPrim);
         }
 
         return children;
@@ -161,10 +161,10 @@ public class Overs
 
     public IEnumerable<ComponentJson> GetComponentsFor(string name)
     {
-        if (_overs.ContainsKey(name))
-            return _overs[name].Select(o => o.Component).OfType<ComponentJson>();
+        if (_overs.TryGetValue(name, out List<Over>? value))
+            return value.Select(o => o.Component).OfType<ComponentJson>();
         else
-            return Array.Empty<ComponentJson>();
+            return [];
     }
 }
 
