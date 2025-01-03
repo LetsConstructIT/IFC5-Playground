@@ -58,9 +58,8 @@ internal class Ifc5Inserter
             var mesh = _meshCreator.CreateRhinoMesh(usdGeomMesh);
             mesh.Transform(transformation);
             mesh.VertexColors.CreateMonotoneMesh(material);
-            var attributes = new ObjectAttributes();
-            if (layerIndex != -1)
-                attributes.LayerIndex = layerIndex;
+
+            var attributes = ComposeAttributes(layerIndex, name, composedObject.Components);
 
             doc.Objects.Add(mesh, attributes);
         }
@@ -69,6 +68,26 @@ internal class Ifc5Inserter
         {
             InsertObject(doc, child, transformation, material, name);
         }
+    }
+
+    private static ObjectAttributes ComposeAttributes(int layerIndex, string name, List<ComponentJson> components)
+    {
+        var attributes = new ObjectAttributes();
+        if (layerIndex != -1)
+            attributes.LayerIndex = layerIndex;
+
+        attributes.SetUserString("Name", name);
+
+        foreach (var component in components)
+        {
+            if (!component.TryConvertToAttributes(out Dictionary<string, string>? toDisplay) || toDisplay is null)
+                continue;
+
+            foreach (var keyValuePair in toDisplay)
+                attributes.SetUserString(keyValuePair.Key, keyValuePair.Value);
+        }
+
+        return attributes;
     }
 
     private int CreateOrReuseLayer(RhinoDoc doc, string name)

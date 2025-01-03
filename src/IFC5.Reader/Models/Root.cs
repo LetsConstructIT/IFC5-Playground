@@ -49,7 +49,11 @@ public interface IComponentable
 
 public partial class ComponentJson
 {
-
+    public virtual bool TryConvertToAttributes(out Dictionary<string, string>? attributes)
+    {
+        attributes = null;
+        return false;
+    }
 }
 
 public partial class Ifc5ClassComponent : ComponentJson
@@ -59,6 +63,17 @@ public partial class Ifc5ClassComponent : ComponentJson
 
     [JsonProperty("uri")]
     public string? Uri { get; set; }
+
+    public override bool TryConvertToAttributes(out Dictionary<string, string>? attributes)
+    {
+        attributes = new Dictionary<string, string>
+        {
+            [$"{nameof(Ifc5ClassComponent)}:Code"] = Code ?? string.Empty,
+            [$"{nameof(Ifc5ClassComponent)}:uri"] = Uri ?? string.Empty
+        };
+
+        return true;
+    }
 }
 
 public partial class NlsfbClassComponent : ComponentJson
@@ -98,6 +113,16 @@ public partial class UsdGeomMeshComponent : ComponentJson
 
     [JsonProperty("faceVertexCounts")]
     public int[]? FaceVertexCounts { get; set; }
+
+    public override bool TryConvertToAttributes(out Dictionary<string, string>? attributes)
+    {
+        attributes = new Dictionary<string, string>
+        {
+            [$"{nameof(UsdGeomMeshComponent)}:faceVertexIndices"] = $"[{string.Join(",", FaceVertexIndices!)}]"
+        };
+
+        return true;
+    }
 }
 
 public partial class UsdGeomBasisCurvesComponent : ComponentJson
@@ -116,6 +141,16 @@ public partial class UsdGeomVisibilityApiVisibilityComponent : ComponentJson
 {
     [JsonProperty("visibility")]
     public string? Visibility { get; set; }
+
+    public override bool TryConvertToAttributes(out Dictionary<string, string>? attributes)
+    {
+        attributes = new Dictionary<string, string>
+        {
+            [$"{nameof(UsdGeomVisibilityApiVisibilityComponent)}:Visibility"] = Visibility ?? string.Empty
+        };
+
+        return true;
+    }
 }
 
 public partial class UsdShadeShaderComponent : ComponentJson
@@ -134,6 +169,16 @@ public partial class Ifc5SpaceboundaryComponent : ComponentJson
 {
     [JsonProperty("relatedElement")]
     public OutputsSurfaceConnect? RelatedElement { get; set; }
+
+    public override bool TryConvertToAttributes(out Dictionary<string, string>? attributes)
+    {
+        attributes = new Dictionary<string, string>
+        {
+            [$"{nameof(Ifc5SpaceboundaryComponent)}:RelatedElement:ref"] = RelatedElement!.Ref!
+        };
+
+        return true;
+    }
 }
 
 public partial class OutputsSurfaceConnect
@@ -146,6 +191,16 @@ public partial class CustomDataComponent : ComponentJson
 {
     [JsonProperty("originalStepInstance")]
     public string? OriginalStepInstance { get; set; }
+
+    public override bool TryConvertToAttributes(out Dictionary<string, string>? attributes)
+    {
+        attributes = new Dictionary<string, string>
+        {
+            [$"{nameof(CustomDataComponent)}:OriginalStepInstance"] = OriginalStepInstance ?? string.Empty
+        };
+
+        return true;
+    }
 }
 
 public partial class DefJson : PrimJson, IParent, IComponentable
@@ -266,7 +321,8 @@ internal class PrimConverter : JsonConverter<PrimJson>
             if (readObject is ComponentJson component)
                 return component;
         }
-        return new ComponentJson();
+
+        return null;
     }
 
     private Type GetDefType(string typeName)
