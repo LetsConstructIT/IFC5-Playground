@@ -1,5 +1,6 @@
 ﻿using IFC5.Reader.Domain;
 using IFC5.Reader.Models;
+using IFC5.Reader.Models.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

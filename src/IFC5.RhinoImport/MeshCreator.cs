@@ -1,4 +1,4 @@
-﻿using IFC5.Reader.Models;
+﻿using IFC5.Reader.Models.DTOs;
 using Rhino.Geometry;
 
 namespace IFC5.RhinoImport;

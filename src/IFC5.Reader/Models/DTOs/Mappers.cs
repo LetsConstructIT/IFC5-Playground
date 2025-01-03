@@ -2,7 +2,7 @@
 using IFC5.Reader.Exceptions;
 using System;
 
-namespace IFC5.Reader.Models;
+namespace IFC5.Reader.Models.DTOs;
 public static class Mappers
 {
     public static Def ToDomain(this DefJson json)

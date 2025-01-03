@@ -1,4 +1,4 @@
-﻿using IFC5.Reader.Models;
+﻿using IFC5.Reader.Models.DTOs;
 using Rhino.Geometry;
 using System.Drawing;
 

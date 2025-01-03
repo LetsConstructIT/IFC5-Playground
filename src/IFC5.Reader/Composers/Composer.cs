@@ -1,4 +1,4 @@
-﻿using IFC5.Reader.Models;
+﻿using IFC5.Reader.Models.DTOs;
 using System.Collections.Generic;
 
 namespace IFC5.Reader.Composers;

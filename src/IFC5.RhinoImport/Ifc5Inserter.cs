@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using IFC5.Reader.Composers;
-using IFC5.Reader.Models;
 using System;
 using Rhino.DocObjects;
+using IFC5.Reader.Models.DTOs;
 
 namespace IFC5.RhinoImport;
 internal class Ifc5Inserter
