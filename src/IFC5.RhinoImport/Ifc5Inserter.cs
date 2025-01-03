@@ -16,15 +16,15 @@ internal class Ifc5Inserter
 
     internal void Insert(RhinoDoc doc, ComposedObjects composedObjects)
     {
-        var transformation = Transform.Identity;
-        var material = Color.White;
-
         var rawMaterials = composedObjects.Where(c => c.Type == "UsdShade:Material");
         PopulateMaterials(rawMaterials);
 
         foreach (var composedObject in composedObjects.Except(rawMaterials))
         {
-            InsertObject(doc, composedObject, transformation, material);
+            var transformation = Transform.Identity;
+            var material = Color.White;
+            var name = "";
+            InsertObject(doc, composedObject, transformation, material, name);
         }
     }
 
@@ -45,12 +45,13 @@ internal class Ifc5Inserter
         }
     }
 
-    private void InsertObject(RhinoDoc doc, ComposedObject composedObject, Transform transformation, Color material)
+    private void InsertObject(RhinoDoc doc, ComposedObject composedObject, Transform transformation, Color material, string name)
     {
-        var layerIndex = CreateOrReuseLayer(doc, composedObject);
-
+        name = $"{name}/{composedObject.GetFriendlyName()}";
         transformation = AdjustTransformation(composedObject.Components, transformation);
         material = AdjustMaterial(composedObject.Components, material);
+
+        var layerIndex = CreateOrReuseLayer(doc, name);
 
         if (HasVisibleMesh(composedObject.Components, out UsdGeomMeshComponent? usdGeomMesh) && usdGeomMesh is not null)
         {
@@ -66,13 +67,12 @@ internal class Ifc5Inserter
 
         foreach (var child in composedObject.Children)
         {
-            InsertObject(doc, child, transformation, material);
+            InsertObject(doc, child, transformation, material, name);
         }
     }
 
-    private int CreateOrReuseLayer(RhinoDoc doc, ComposedObject composedObject)
+    private int CreateOrReuseLayer(RhinoDoc doc, string name)
     {
-        var name = composedObject.GetFriendlyName();
         var existingLayer = doc.Layers.FindName(name);
 
         if (existingLayer != null)
