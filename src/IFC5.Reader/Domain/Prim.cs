@@ -48,23 +48,23 @@ public class Class : Prim
 public class Def : Prim
 {
     public string Type { get; }
-    public ComponentJson Component { get; }
+    public ComponentJson? Component { get; }
     public string[] Inherits { get; }
 
-    public Def(string name, string[] inherits, string type, ComponentJson component) : base(name)
+    public Def(string name, string[] inherits, string type, ComponentJson? component) : base(name)
     {
         Inherits = inherits.Select(CleanInheritName).ToArray();
         Type = type ?? throw new ArgumentNullException(nameof(type));
-        Component = component ?? throw new ArgumentNullException(nameof(component));
+        Component = component;
     }
 }
 
 public class Over : Prim
 {
-    public ComponentJson Component { get; }
+    public ComponentJson? Component { get; }
 
-    public Over(string name, ComponentJson component) : base(name)
+    public Over(string name, ComponentJson? component) : base(name)
     {
-        Component = component ?? throw new ArgumentNullException(nameof(component));
+        Component = component;
     }
 }

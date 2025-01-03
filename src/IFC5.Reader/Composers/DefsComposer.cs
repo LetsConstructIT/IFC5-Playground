@@ -36,7 +36,8 @@ internal class DefsComposer
         if (prim is Def def)
         {
             type = def.Type;
-            components.Add(def.Component);
+            if (def.Component is not null)
+                components.Add(def.Component);
         }
 
         var composedDef = new ComposedObject(prim.Name, type, components);

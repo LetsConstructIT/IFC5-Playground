@@ -13,9 +13,8 @@ public static class Mappers
         if (json.Type is null || string.IsNullOrEmpty(json.Type))
             throw new MappingException(nameof(json.Type));
 
-        var component = json.Component is null ? NullComponent.Instance : json.Component;
         var inherits = json.Inherits is null ? Array.Empty<string>() : json.Inherits;
-        return new Def(json.Name, inherits, json.Type, component);
+        return new Def(json.Name, inherits, json.Type, json.Component);
     }
 
     public static Def ToDomain(this DefJson json, string overwrittenName)
@@ -23,9 +22,8 @@ public static class Mappers
         var type = json.Type is null || string.IsNullOrEmpty(json.Type) ?
             string.Empty : json.Type;
 
-        var component = json.Component is null ? NullComponent.Instance : json.Component;
         var inherits = json.Inherits is null ? Array.Empty<string>() : json.Inherits;
-        return new Def(overwrittenName, inherits, type, component);
+        return new Def(overwrittenName, inherits, type, json.Component);
     }
 
     public static Class ToDomain(this ClassJson json)
@@ -45,8 +43,7 @@ public static class Mappers
         if (json.Name is null || string.IsNullOrEmpty(json.Name))
             throw new MappingException(nameof(json.Name));
 
-        var component = json.Component is null ? NullComponent.Instance : json.Component;
-        return new Over(json.Name, component);
+        return new Over(json.Name, json.Component);
     }
 
     public static Prim ToDomain(this PrimJson primJson)

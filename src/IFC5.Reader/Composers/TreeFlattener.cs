@@ -162,7 +162,7 @@ public class Overs
     public IEnumerable<ComponentJson> GetComponentsFor(string name)
     {
         if (_overs.ContainsKey(name))
-            return _overs[name].Select(o => o.Component);
+            return _overs[name].Select(o => o.Component).OfType<ComponentJson>();
         else
             return Array.Empty<ComponentJson>();
     }
