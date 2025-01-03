@@ -2,6 +2,7 @@
 using IFC5.Reader.Models;
 using Rhino;
 using Rhino.Geometry;
+using Rhino.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,10 +44,8 @@ public class Ifc5ImportPlugin : Rhino.PlugIns.FileImportPlugIn
     {
         transformation = AdjustTransformation(composedObject.Components, transformation);
 
-        var usdGeomMeshes = composedObject.Components.OfType<UsdGeomMeshComponent>().ToList();
-        if (usdGeomMeshes.Any() && ShouldBeVisible(composedObject))
+        if (HasVisibleMesh(composedObject.Components, out UsdGeomMeshComponent? usdGeomMesh) && usdGeomMesh is not null)
         {
-            var usdGeomMesh = usdGeomMeshes.Last();
             var mesh = _meshCreator.CreateRhinoMesh(usdGeomMesh);
             mesh.Transform(transformation);
             doc.Objects.Add(mesh);
@@ -68,12 +67,27 @@ public class Ifc5ImportPlugin : Rhino.PlugIns.FileImportPlugIn
         return transformation * transformationToAdd;
     }
 
-    private bool ShouldBeVisible(ComposedObject composedObject)
+    private bool HasVisibleMesh(List<ComponentJson> components, out UsdGeomMeshComponent? usdGeomMesh)
     {
-        var visibility = composedObject.Components.OfType<UsdGeomVisibilityApiVisibilityComponent>().ToList();
-        if (!visibility.Any())
+        usdGeomMesh = null;
+
+        var usdGeomMeshes = components.OfType<UsdGeomMeshComponent>();
+        var visibilities = components.OfType<UsdGeomVisibilityApiVisibilityComponent>();
+
+        if (usdGeomMeshes.Any() && ShouldBeVisible(visibilities))
+        {
+            usdGeomMesh = usdGeomMeshes.Last();
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool ShouldBeVisible(IEnumerable<UsdGeomVisibilityApiVisibilityComponent> visibilities)
+    {
+        if (!visibilities.Any())
             return true;
 
-        return visibility.Last().Visibility != "invisible";
+        return visibilities.Last().Visibility != "invisible";
     }
 }
