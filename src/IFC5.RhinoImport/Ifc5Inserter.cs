@@ -6,21 +6,41 @@ using System.Linq;
 using IFC5.Reader.Composers;
 using IFC5.Reader.Models;
 using System;
-using Eto.Forms;
 
 namespace IFC5.RhinoImport;
 internal class Ifc5Inserter
 {
     private readonly MeshCreator _meshCreator = new();
+    private readonly List<Ifc5Material> _materials = new();
 
     internal void Insert(RhinoDoc doc, ComposedObjects composedObjects)
     {
         var transformation = Transform.Identity;
         var material = Color.White;
 
-        foreach (var composedObject in composedObjects)
+        var rawMaterials = composedObjects.Where(c => c.Type == "UsdShade:Material");
+        PopulateMaterials(rawMaterials);
+
+        foreach (var composedObject in composedObjects.Except(rawMaterials))
         {
             AddMesh(doc, composedObject, transformation, material);
+        }
+    }
+
+    private void PopulateMaterials(IEnumerable<ComposedObject> rawMaterials)
+    {
+        _materials.Clear();
+        foreach (var materialObject in rawMaterials)
+        {
+            foreach (var potentialShader in materialObject.Children)
+            {
+                var shaders = potentialShader.Components.OfType<UsdShadeShaderComponent>();
+                if (!shaders.Any())
+                    continue;
+
+                _materials.Add(new Ifc5Material(materialObject.Name, shaders.Last().ToRhino()));
+                break;
+            }
         }
     }
 
@@ -33,7 +53,7 @@ internal class Ifc5Inserter
         {
             var mesh = _meshCreator.CreateRhinoMesh(usdGeomMesh);
             mesh.Transform(transformation);
-            mesh.VertexColors.CreateMonotoneMesh(System.Drawing.Color.FromArgb(128, 0, 128, 0));
+            mesh.VertexColors.CreateMonotoneMesh(material);
             doc.Objects.Add(mesh);
         }
 
@@ -49,9 +69,21 @@ internal class Ifc5Inserter
         if (!materialBindings.Any())
             return material;
 
-        var materialBinding = materialBindings.Last();
+        var materialName = SanitizeName(materialBindings.Last());
+        var newMaterial = _materials.FirstOrDefault(c => c.Name == materialName);
 
-        return material;
+        return newMaterial switch
+        {
+            not null => newMaterial.Color,
+            _ => material
+        };
+
+        string SanitizeName(UsdShadeMaterialBindingApiComponent usdShadeMaterialBindingApiComponent)
+        {
+            var rawName = usdShadeMaterialBindingApiComponent.MaterialBinding!.Ref!;
+            // </WallMaterial>
+            return rawName.Substring(2, rawName.Length - 3);
+        }
     }
 
     private Transform AdjustTransformation(List<ComponentJson> components, Transform transformation)
@@ -86,5 +118,17 @@ internal class Ifc5Inserter
             return true;
 
         return visibilities.Last().Visibility != "invisible";
+    }
+}
+
+public class Ifc5Material
+{
+    public string Name { get; }
+    public Color Color { get; }
+
+    public Ifc5Material(string name, Color color)
+    {
+        Name = name ?? throw new ArgumentNullException(nameof(name));
+        Color = color;
     }
 }
